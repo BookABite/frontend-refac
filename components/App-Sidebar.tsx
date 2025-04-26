@@ -17,11 +17,17 @@ export function AppSidebar({
     selectedUnit,
     setSelectedUnit,
     setActiveSction,
+    user,
     ...props
 }: React.ComponentProps<typeof Sidebar> & {
     selectedUnit: string
     setSelectedUnit: React.Dispatch<React.SetStateAction<string>>
     setActiveSction: React.Dispatch<React.SetStateAction<string>>
+    user: {
+        name: string
+        email: string
+        avatar: string
+    }
 }) {
     return (
         <Sidebar collapsible="icon" {...props}>
@@ -32,7 +38,7 @@ export function AppSidebar({
                 <NavMain items={data.navMain} setActiveSction={setActiveSction} />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser user={user} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

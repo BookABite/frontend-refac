@@ -38,12 +38,12 @@ export function NavMain({
                         key={item.title}
                         asChild
                         defaultOpen={item.isActive}
-                        className="group/collapsible"
+                        className="group/collapsible w-full"
                     >
                         <SidebarMenuItem>
                             <CollapsibleTrigger asChild>
                                 <SidebarMenuButton tooltip={item.title} asChild>
-                                    <button>
+                                    <button className="w-full">
                                         {item.icon && <item.icon />}
                                         <span>{item.title}</span>
                                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -57,6 +57,7 @@ export function NavMain({
                                             <SidebarMenuSubButton asChild>
                                                 <button
                                                     onClick={() => setActiveSction(subItem.value)}
+                                                    className="w-full cursor-pointer hover:bg-rose-500"
                                                 >
                                                     <span>{subItem.title}</span>
                                                 </button>

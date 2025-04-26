@@ -53,12 +53,12 @@ const data = {
             icon: Cog,
             items: [
                 {
-                    title: 'Perfil',
-                    value: '/settings/profile',
+                    title: 'Perfil Grupo',
+                    value: '/settings/group',
                 },
                 {
-                    title: 'Preferências',
-                    value: '/settings/preferences',
+                    title: 'Perfil Unidade',
+                    value: '/settings/unit',
                 },
                 {
                     title: 'Controle de Horários',
@@ -72,13 +72,6 @@ const data = {
         email: 'usuario@example.com',
         avatar: '/avatars/default.jpg',
     },
-    teams: [
-        {
-            name: 'Minha Empresa',
-            logo: Building2,
-            plan: 'Pro',
-        },
-    ],
 }
 
 export default data

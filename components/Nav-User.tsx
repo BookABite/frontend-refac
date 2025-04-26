@@ -18,15 +18,15 @@ import {
 } from '@/components/ui/sidebar'
 import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react'
 
-export function NavUser({
-    user,
-}: {
+interface NavUserProps {
     user: {
         name: string
         email: string
         avatar: string
     }
-}) {
+}
+
+export function NavUser({ user }: NavUserProps) {
     const { isMobile } = useSidebar()
 
     return (
@@ -79,10 +79,6 @@ export function NavUser({
                             <DropdownMenuItem>
                                 <BadgeCheck />
                                 Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                Billing
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <Bell />

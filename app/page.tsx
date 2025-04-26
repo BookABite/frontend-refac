@@ -1,8 +1,10 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { HomeIcon } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Home() {
     return (
@@ -37,15 +39,12 @@ export default function Home() {
                             Gerencie mesas, clientes e reservas em um só lugar. A solução completa
                             para seu restaurante ou bar.
                         </p>
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                            <a
-                                href="/login"
-                                className="inline-block bg-rose-500 hover:bg-rose-600 text-white font-medium py-3 px-8 rounded-lg shadow-lg transition-colors"
-                            >
-                                <HomeIcon className="text-white" />
-                                Acessar Sistema
-                            </a>
-                        </motion.div>
+                        <Link href="/login">
+                            <Button variant="destructive" className="w-[200px] group">
+                                <HomeIcon className="group-hover:animate-bounce" />
+                                Começar
+                            </Button>
+                        </Link>
                     </motion.div>
                 </div>
 

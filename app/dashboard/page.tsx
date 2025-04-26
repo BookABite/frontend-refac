@@ -3,9 +3,11 @@
 import { AppSidebar } from '@/components/App-Sidebar'
 import { DashboardContent } from '@/components/Dashboard-Contente'
 import { DataTable } from '@/components/Data-Table'
+import { GroupUpdate } from '@/components/Group-Update'
 import { Header } from '@/components/Header-Sidebar'
 import SettingsHours from '@/components/Settings-Hours'
 import SeatingLayout from '@/components/Table-Bookings'
+import { UnitUpdateForm } from '@/components/Unit-Update'
 import WhatsAppIntegration from '@/components/Whatsapp-Integration'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { useFetchBookings } from '@/hooks/use-bookings'
@@ -97,10 +99,18 @@ export default function Page() {
                         <WhatsAppIntegration />
                     </div>
                 )
-            case '/chat/history':
-                return <div className="h-full flex-1 gap-4">{/* <WhatsAppIntegration /> */}</div>
-            case '/settings/profile':
-                return <div className="flex h-full gap-4">{/* <Settings /> */}</div>
+            case '/settings/group':
+                return (
+                    <div className="h-full w-full flex-1 gap-4">
+                        <GroupUpdate groupId={user?.group_id || ''} />
+                    </div>
+                )
+            case '/settings/unit':
+                return (
+                    <div className="h-full w-full flex-1 gap-4">
+                        <UnitUpdateForm unitId={selectedUnit} />
+                    </div>
+                )
             case '/settings/preferences':
                 return <div className="flex h-full gap-4">{/* <Settings /> */}</div>
             case '/settings/hours':
@@ -119,6 +129,11 @@ export default function Page() {
                 selectedUnit={selectedUnit}
                 setSelectedUnit={setSelectedUnit}
                 setActiveSction={setActiveSection}
+                user={{
+                    name: user?.group?.name || '',
+                    email: user?.email || '',
+                    avatar: user?.group?.logo || '',
+                }}
             />
             <SidebarInset>
                 <header className="flex h-10 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
