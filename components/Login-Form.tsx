@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import {
     Form,
     FormControl,
@@ -22,11 +22,9 @@ import {
     Lock,
     LogInIcon,
     Mail,
-    RectangleEllipsis,
     Utensils,
 } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -66,7 +64,7 @@ export function LoginForm() {
             if (response.ok) {
                 const { access } = await response.json()
                 document.cookie = `access_token=${access}; path=/; max-age=86400; SameSite=Strict${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`
-                toast.success('Login realizado com sucesso!')
+                toast.success('🟢 Login realizado com sucesso!')
                 router.push('/dashboard')
             } else {
                 toast.error('Credenciais inválidas')

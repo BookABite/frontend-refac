@@ -9,10 +9,10 @@ import { Separator } from './ui/separator'
 
 interface ReservationDetailsStepProps {
     form: any
-    restaurant: UnitInfo
+    unit: UnitInfo
 }
 
-export const ReservationDetailsStep = ({ form, restaurant }: ReservationDetailsStepProps) => {
+export const ReservationDetailsStep = ({ form, unit }: ReservationDetailsStepProps) => {
     const [availableTimes, setAvailableTimes] = useState<string[]>([])
     const [selectedDate, setSelectedDate] = useState<string>('')
 
@@ -22,7 +22,7 @@ export const ReservationDetailsStep = ({ form, restaurant }: ReservationDetailsS
         const dateObj = new Date(date)
         const dayOfWeek = dateObj.getDay()
 
-        const dayWorkingHours = restaurant.working_hours.filter(
+        const dayWorkingHours = unit.working_hours.filter(
             (wh: any) => wh.day_of_week === dayOfWeek && !wh.is_closed
         )
 
@@ -139,6 +139,7 @@ export const ReservationDetailsStep = ({ form, restaurant }: ReservationDetailsS
                                     max="20"
                                     placeholder="Número de pessoas"
                                     className="rounded-lg"
+                                    onChange={(e) => field.onChange(Number(e.target.value))}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -163,6 +164,7 @@ export const ReservationDetailsStep = ({ form, restaurant }: ReservationDetailsS
                                     max="4"
                                     placeholder="Duração em horas"
                                     className="rounded-lg"
+                                    onChange={(e) => field.onChange(Number(e.target.value))}
                                 />
                             </FormControl>
                             <FormMessage />

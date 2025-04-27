@@ -18,7 +18,7 @@ export const NavigationButtons = ({
     onNext,
 }: NavigationButtonsProps) => {
     return (
-        <div className="flex justify-between items-center w-full">
+        <div className="flex flex-col gap-2 justify-between items-center w-full">
             {currentStep > 1 ? (
                 <Button
                     type="button"
@@ -39,8 +39,8 @@ export const NavigationButtons = ({
                     onClick={onNext}
                     className="w-full rounded-lg dark:text-white"
                 >
-                    Próximo
                     <ArrowRight />
+                    Próximo
                 </Button>
             )}
         </div>

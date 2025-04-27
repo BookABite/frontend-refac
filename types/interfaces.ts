@@ -100,6 +100,7 @@ export interface UnitInfo {
     website: string
     description: string
     logo: string
+    banner_image: string
     role: string
     address: Addresses[]
     restaurant: Group
@@ -130,6 +131,6 @@ export interface WorkingHours {
 export type ClientBookingProps = {
     group_id: string
     unitId: string
-    restaurant: UnitInfo
+    unit: UnitInfo
     working_hours: WorkingHours[]
 }

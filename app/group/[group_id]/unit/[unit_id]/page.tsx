@@ -22,7 +22,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
     const { group_id, unit_id } = use(params)
     const [showForm, setShowForm] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
-    const [restaurant, setRestaurant] = useState<UnitInfo | null>(null)
+    const [unit, setUnit] = useState<UnitInfo | null>(null)
     const [activeSection, setActiveSection] = useState('info')
 
     useEffect(
@@ -36,7 +36,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                     }
 
                     const data = await response.json()
-                    setRestaurant(data)
+                    setUnit(data)
                 } catch (error) {
                     console.error(error)
                     toast.error('Erro ao encontrar o restaurante')
@@ -56,12 +56,12 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
 
     if (showForm) {
         return (
-            restaurant && (
+            unit && (
                 <ClientBooking
-                    restaurant={restaurant}
+                    unit={unit}
                     group_id={group_id}
                     unitId={unit_id}
-                    working_hours={restaurant.working_hours}
+                    working_hours={unit.working_hours}
                 />
             )
         )
@@ -84,7 +84,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
         return timeString.slice(0, 5)
     }
 
-    const groupedHours = restaurant?.working_hours.reduce(
+    const groupedHours = unit?.working_hours.reduce(
         (acc, hour) => {
             if (hour.is_closed) return acc
 
@@ -102,7 +102,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
         {} as Record<string, string[]>
     )
 
-    if (!restaurant) {
+    if (!unit) {
         return (
             <div className="flex h-screen flex-col items-center justify-center gap-4 p-8">
                 <div className="rounded-full bg-red-100 p-4">
@@ -123,14 +123,21 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
         <div className="relative mx-auto max-w-4xl pb-5">
             {/* Hero Image */}
             <div className="relative h-48 w-full overflow-hidden rounded-b-3xl md:h-80">
-                <div className="absolute inset-0 bg-[#000000] z-10"></div>
+                <Image
+                    src={unit.banner_image || '/back.png'}
+                    alt={`Banner ${unit.name}`}
+                    layout="fill"
+                    objectFit="cover"
+                    className="absolute inset-0 z-10"
+                    priority
+                />
             </div>
 
             {/* Restaurant Logo */}
             <div className="relative mx-auto -mt-20 flex justify-center z-20">
                 <Image
-                    src={restaurant.logo || '/default-restaurant-image.png'}
-                    alt={`Logo ${restaurant.name}`}
+                    src={unit.logo || '/default-restaurant-image.png'}
+                    alt={`Logo ${unit.name}`}
                     width={100}
                     height={100}
                     className="rounded-full h-40 w-40 object-cover border border-white shadow-lg"
@@ -147,7 +154,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                     transition={{ duration: 0.5 }}
                     className="text-center"
                 >
-                    <h1 className="text-3xl font-bold tracking-tight">{restaurant.name}</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">{unit.name}</h1>
                     <div className="mt-2 flex items-center justify-center gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -170,9 +177,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                             </DialogContent>
                         </Dialog>
                     </div>
-                    <p className="mt-4 text-sm text-muted-foreground italic">
-                        {restaurant.description}
-                    </p>
+                    <p className="mt-4 text-sm text-muted-foreground italic">{unit.description}</p>
                 </motion.div>
 
                 {/* Navigation Tabs */}
@@ -243,7 +248,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                                     <h3 className="font-medium">Contato</h3>
                                     <p className="mt-1 text-sm text-muted-foreground">
                                         (11) 99999-9999 <br />
-                                        contato@{restaurant.name.toLowerCase()}.com.br
+                                        contato@{unit.name.toLowerCase()}.com.br
                                     </p>
                                 </div>
                             </div>
@@ -252,7 +257,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                                 <MapPin className="h-5 w-5 text-primary" />
                                 <div>
                                     <h3 className="font-medium">Endereço</h3>
-                                    {restaurant.address.map((addresses, index) => (
+                                    {unit.address.map((addresses, index) => (
                                         <div
                                             key={index}
                                             className="mt-1 text-sm text-muted-foreground"
@@ -281,7 +286,7 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                                 </h3>
                                 <div className="aspect-video overflow-hidden rounded-lg shadow-md">
                                     <iframe
-                                        src={restaurant.address[0].maps_url}
+                                        src={unit.address[0].maps_url}
                                         width="100%"
                                         height="100%"
                                         style={{ border: 0 }}
@@ -292,9 +297,9 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                                     ></iframe>
                                 </div>
                                 <p className="mt-3 text-sm text-muted-foreground">
-                                    {restaurant.address[0].street}, {restaurant.address[0].number} -{' '}
-                                    {restaurant.address[0].neighborhood},{' '}
-                                    {restaurant.address[0].city} - {restaurant.address[0].state}
+                                    {unit.address[0].street}, {unit.address[0].number} -{' '}
+                                    {unit.address[0].neighborhood}, {unit.address[0].city} -{' '}
+                                    {unit.address[0].state}
                                 </p>
                             </div>
                         </motion.div>

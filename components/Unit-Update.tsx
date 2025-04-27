@@ -39,14 +39,26 @@ import { z } from 'zod'
 
 const formSchema = z.object({
     unit_id: z.string().min(1, 'ID da unidade é obrigatório'),
-    name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
-    description: z.string().min(10, 'Descrição deve ter pelo menos 10 caracteres'),
-    email: z.string().email('Email inválido'),
-    phone: z.string().min(10, 'Telefone deve ter pelo menos 10 dígitos'),
-    logo: z.string().url('URL da logo inválida').optional(),
-    banner_image: z.string().url('URL da imagem de banner inválida').optional(),
-    website: z.string().url('URL do website inválida'),
-    address: z.string().min(5, 'Endereço deve ter pelo menos 5 caracteres'),
+    name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres').optional().or(z.literal('')),
+    description: z
+        .string()
+        .min(10, 'Descrição deve ter pelo menos 10 caracteres')
+        .optional()
+        .or(z.literal('')),
+    email: z.string().email('Email inválido').optional().or(z.literal('')),
+    phone: z
+        .string()
+        .min(10, 'Telefone deve ter pelo menos 10 dígitos')
+        .optional()
+        .or(z.literal('')),
+    logo: z.string().url('URL da logo inválida').optional().or(z.literal('')),
+    banner_image: z.string().url('URL da imagem de banner inválida').optional().or(z.literal('')),
+    website: z.string().url('URL do website inválida').optional().or(z.literal('')),
+    address: z
+        .string()
+        .min(5, 'Endereço deve ter pelo menos 5 caracteres')
+        .optional()
+        .or(z.literal('')),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -103,13 +115,12 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
             }
 
             const data = await response.json()
-            console.log('Dados da unidade carregados:', data)
 
-            if (data && data.unit_id) {
-                form.reset(data)
-            } else {
-                setErrorMessage('Dados da unidade não encontrados ou inválidos')
-            }
+            const currentValues = form.getValues()
+            form.reset({
+                ...data,
+                banner_image: currentValues.banner_image || data.banner_image,
+            })
         } catch (error) {
             console.error('Erro ao carregar dados da unidade:', error)
             setErrorMessage(
@@ -129,16 +140,21 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
     const onSubmit = async (data: FormValues) => {
         setIsLoading(true)
         try {
+            // Remove campos vazios ou null antes de enviar
+            const payload = Object.fromEntries(
+                Object.entries(data).filter(([_, value]) => value !== null && value !== '')
+            )
+
             const response = await fetch(`/api/unit/${unitId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: JSON.stringify(payload),
             })
 
             if (response.ok) {
                 toast.success('Unidade atualizada com sucesso!')
                 await refreshUserData()
-                fetchUnitData(unitId)
+                // Não chame fetchUnitData aqui para preservar as alterações
             } else {
                 const errorData = await response.json().catch(() => null)
                 throw new Error(
@@ -171,9 +187,9 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                 image.onerror = reject
             })
 
-            form.setValue('banner_image', bannerUrl)
+            form.setValue('banner_image', bannerUrl, { shouldValidate: true })
             toast.success('Banner atualizado com sucesso!')
-            setBannerUrl('') // Limpa o input após o sucesso
+            setBannerUrl('')
         } catch (error) {
             toast.error('URL inválida ou imagem não encontrada')
         } finally {

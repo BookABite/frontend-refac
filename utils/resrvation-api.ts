@@ -13,7 +13,7 @@ export const reservationApi = {
      * Busca todas as reservas de uma unidade
      */
     getByRestaurant: (restaurantId: string) => {
-        return apiBookaBite.get<Booking[]>(`/restaurant/dashboard/${restaurantId}/dashboard`)
+        return apiBookaBite.get<Booking[]>(`/group/dashboard/${restaurantId}/dashboard`)
     },
 
     /**
@@ -27,7 +27,7 @@ export const reservationApi = {
      * Cria uma nova reserva
      */
     create: (unitId: string, bookingData: Omit<Booking, 'id'>) => {
-        return apiBookaBite.post<Booking>(`/reservations/restaurant/${unitId}`, bookingData)
+        return apiBookaBite.post<Booking>(`/reservations/group/${unitId}`, bookingData)
     },
 
     /**

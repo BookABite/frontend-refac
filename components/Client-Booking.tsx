@@ -23,8 +23,8 @@ import { Form } from './ui/form'
 const FormSchema = z.object({
     first_name: z.string().min(1, 'Digite o seu nome'),
     last_name: z.string().min(1, 'Digite o seu nome'),
-    amount_of_people: z.number(),
-    amount_of_hours: z.number(),
+    amount_of_people: z.coerce.number().min(1, 'Digite um número válido'),
+    amount_of_hours: z.coerce.number().min(1, 'Digite um número válido'),
     time: z.string().min(1, 'Digite o horário'),
     date: z.string().min(1, 'Digite a data'),
     email: z.string().email('Digite um email válido'),
@@ -36,7 +36,7 @@ const FormSchema = z.object({
 
 export type FormData = z.infer<typeof FormSchema>
 
-export const ClientBooking = ({ group_id, unitId, restaurant }: ClientBookingProps) => {
+export const ClientBooking = ({ group_id, unitId, unit }: ClientBookingProps) => {
     const totalSteps = 3
     const router = useRouter()
     const { countries, loading, error } = useCountries()
@@ -49,8 +49,8 @@ export const ClientBooking = ({ group_id, unitId, restaurant }: ClientBookingPro
         defaultValues: {
             first_name: '',
             last_name: '',
-            amount_of_people: 0,
-            amount_of_hours: 0,
+            amount_of_people: 1,
+            amount_of_hours: 1,
             time: '',
             date: '',
             email: '',
@@ -87,16 +87,13 @@ export const ClientBooking = ({ group_id, unitId, restaurant }: ClientBookingPro
                 observation: data.observations || '',
             }
 
-            const response = await fetch(
-                `/api/reservations/restaurant/${group_id}/unit/${unitId}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formattedData),
-                }
-            )
+            const response = await fetch(`/api/reservations/group/${group_id}/unit/${unitId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formattedData),
+            })
 
             const responseData = await response.json()
 
@@ -118,8 +115,8 @@ export const ClientBooking = ({ group_id, unitId, restaurant }: ClientBookingPro
                     reservation_hash: responseData.reservation_hash,
                     restaurant: {
                         id: group_id,
-                        restaurantName: restaurant.name,
-                        restaurantAddress: restaurant.address,
+                        restaurantName: unit.name,
+                        restaurantAddress: unit.address,
                     },
                 }
 
@@ -188,23 +185,37 @@ export const ClientBooking = ({ group_id, unitId, restaurant }: ClientBookingPro
     }
 
     return (
-        <div className="container mx-auto max-w-2xl pb-16 pt-6 px-6">
+        <div className="relative mx-auto max-w-4xl pb-5">
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8 flex flex-col items-center"
             >
-                <div className="relative mb-4 flex flex-col items-center">
-                    <Image
-                        src={restaurant.logo || '/default-restaurant-image.png'}
-                        alt={`Logo ${restaurant.name}`}
-                        width={100}
-                        height={100}
-                        className="rounded-full h-40 w-4h-40 object-cover border border-white shadow-lg"
-                        quality={100}
-                        priority
-                    />
-                    <h1 className="mt-4 text-2xl font-bold">{restaurant.name}</h1>
+                <div className="relative mb-4 flex flex-col items-center w-full">
+                    <div className="relative h-48 w-full overflow-hidden rounded-b-3xl md:h-80">
+                        <Image
+                            src={unit.banner_image || '/back.png'}
+                            alt={`Banner ${unit.name}`}
+                            layout="fill"
+                            objectFit="cover"
+                            className="absolute inset-0 z-10"
+                            priority
+                        />
+                    </div>
+
+                    {/* Restaurant Logo */}
+                    <div className="relative mx-auto -mt-20 flex justify-center z-20">
+                        <Image
+                            src={unit.logo || '/default-restaurant-image.png'}
+                            alt={`Logo ${unit.name}`}
+                            width={100}
+                            height={100}
+                            className="rounded-full h-40 w-40 object-cover border border-white shadow-lg"
+                            quality={100}
+                            priority
+                        />
+                    </div>
+                    <h1 className="mt-4 text-2xl font-bold">{unit.name}</h1>
                     <p className="text-sm text-muted-foreground">Reserve sua mesa</p>
                 </div>
             </motion.div>
@@ -212,7 +223,7 @@ export const ClientBooking = ({ group_id, unitId, restaurant }: ClientBookingPro
             <ProgressIndicator currentStep={currentStep} totalSteps={totalSteps} />
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-5">
                     {currentStep === 1 && (
                         <motion.div {...fadeInAnimation}>
                             <PersonalInfoStep
@@ -229,7 +240,7 @@ export const ClientBooking = ({ group_id, unitId, restaurant }: ClientBookingPro
 
                     {currentStep === 2 && (
                         <motion.div {...fadeInAnimation}>
-                            <ReservationDetailsStep form={form} restaurant={restaurant} />
+                            <ReservationDetailsStep form={form} unit={unit} />
                         </motion.div>
                     )}
 
@@ -251,11 +262,14 @@ export const ClientBooking = ({ group_id, unitId, restaurant }: ClientBookingPro
                         {currentStep === totalSteps && (
                             <Button
                                 type="submit"
-                                className="group w-full rounded-lg dark:text-white"
+                                className="group  rounded-lg dark:text-white"
                                 disabled={isLoading}
                             >
                                 {isLoading ? (
-                                    <Loader size={16} className="animate-spin" />
+                                    <div className="flex items-center gap-2">
+                                        <Loader size={16} className="animate-spin" />
+                                        Reservando...
+                                    </div>
                                 ) : (
                                     <div className="flex items-center gap-2">
                                         <CookingPot
