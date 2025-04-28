@@ -45,7 +45,20 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         }
 
         // Validar se pelo menos um campo foi enviado para atualização
-        const updatableFields = ['theme', 'currency', 'notification_enabled']
+        const updatableFields = [
+            'name',
+            'description',
+            'email',
+            'phone',
+            'country_code',
+            'facebook_url',
+            'instagram_url',
+            'twitter_url',
+            'whatsapp_url',
+            'primary_currency',
+            'time_zone',
+            'tax_id',
+        ]
 
         const hasUpdatableFields = updatableFields.some((field) => field in body)
 
@@ -57,7 +70,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         }
 
         const response = await fetch(
-            `https://bookabite-back-prod.vercel.app/api/group/settings/${id}/settings`,
+            `https://bookabite-back-prod.vercel.app/api/group/profile/${id}/profile`,
             {
                 method: 'PATCH',
                 headers: {

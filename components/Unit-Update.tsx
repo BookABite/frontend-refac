@@ -23,7 +23,7 @@ import {
     Building2,
     Globe,
     Image as ImageIcon,
-    Loader2,
+    Loader,
     Mail,
     MapPin,
     Phone,
@@ -140,7 +140,6 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
     const onSubmit = async (data: FormValues) => {
         setIsLoading(true)
         try {
-            // Remove campos vazios ou null antes de enviar
             const payload = Object.fromEntries(
                 Object.entries(data).filter(([_, value]) => value !== null && value !== '')
             )
@@ -154,7 +153,6 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
             if (response.ok) {
                 toast.success('Unidade atualizada com sucesso!')
                 await refreshUserData()
-                // Não chame fetchUnitData aqui para preservar as alterações
             } else {
                 const errorData = await response.json().catch(() => null)
                 throw new Error(
@@ -249,7 +247,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
 
                     {isLoading && !form.formState.isSubmitting ? (
                         <div className="h-96 flex items-center justify-center">
-                            <Loader2 className="h-8 w-8 text-rose-600 animate-spin" />
+                            <Loader className="h-8 w-8 text-rose-600 animate-spin" />
                             <span className="ml-2 text-zinc-500">Carregando dados...</span>
                         </div>
                     ) : (
@@ -300,7 +298,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                                     >
                                                         {uploadingBanner ? (
                                                             <>
-                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                <Loader className="mr-2 h-4 w-4 animate-spin" />
                                                                 <span>Carregando...</span>
                                                             </>
                                                         ) : (
@@ -342,7 +340,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                                                     disabled={uploadingLogo}
                                                                 >
                                                                     {uploadingLogo ? (
-                                                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                                                        <Loader className="h-4 w-4 animate-spin" />
                                                                     ) : (
                                                                         <span>Upload</span>
                                                                     )}
@@ -549,7 +547,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                     >
                                         {form.formState.isSubmitting ? (
                                             <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                <Loader className="mr-2 h-4 w-4 animate-spin" />
                                                 <span>Salvando...</span>
                                             </>
                                         ) : (
