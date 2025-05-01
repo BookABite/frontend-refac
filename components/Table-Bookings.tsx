@@ -1,7 +1,7 @@
 'use client'
 
 import { Booking } from '@/types/interfaces'
-import { Loader } from 'lucide-react'
+import { Loader, Salad, Table2 } from 'lucide-react'
 import { useState } from 'react'
 
 import SeatingFilters from './Seating-Filters'
@@ -69,6 +69,15 @@ export default function SeatingLayout({ bookings, isLoading }: SeatingLayoutProp
                         onDateChange={setDate}
                     />
 
+                    <div className="flex flex-col items-start justify-center mb-4">
+                        <p className="flex gap-2 text-xl font-bold uppercase">
+                            <Salad />
+                            reservas
+                        </p>
+                        <p className="text-sm font-light text-zinc-300">
+                            Visualização de mesas reservadas para o dia
+                        </p>
+                    </div>
                     <div className="flex flex-col items-center justify-center space-y-10">
                         <div className="flex flex-col items-start">
                             {Array(Math.ceil(filteredTables.length / 5))

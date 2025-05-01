@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import {
+    Building2,
     Clock,
     CreditCard,
     Facebook,
@@ -151,7 +152,8 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
         >
             <Card className="border border-zinc-200 shadow-sm">
                 <CardHeader className="pb-4">
-                    <CardTitle className="text-2xl font-medium text-zinc-800">
+                    <CardTitle className="flex gap-2 text-2xl font-medium text-zinc-800">
+                        <Building2 />
                         Configurações do Negócio
                     </CardTitle>
                     <CardDescription className="mt-1 text-zinc-500">
@@ -209,7 +211,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <FileDigit className="h-4 w-4 mr-2" />
+                                                            <FileDigit className="h-4 w-4  " />
                                                             ID Fiscal (CNPJ/CPF)
                                                         </FormLabel>
                                                         <FormControl>
@@ -262,7 +264,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <Mail className="h-4 w-4 mr-2" />
+                                                            <Mail className="h-4 w-4  " />
                                                             Email
                                                         </FormLabel>
                                                         <FormControl>
@@ -283,7 +285,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <Phone className="h-4 w-4 mr-2" />
+                                                            <Phone className="h-4 w-4  " />
                                                             Telefone
                                                         </FormLabel>
                                                         <FormControl>
@@ -304,7 +306,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <Globe className="h-4 w-4 mr-2" />
+                                                            <Globe className="h-4 w-4  " />
                                                             Código do País
                                                         </FormLabel>
                                                         <FormControl>
@@ -339,7 +341,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <Facebook className="h-4 w-4 mr-2" />
+                                                            <Facebook className="h-4 w-4  " />
                                                             Facebook
                                                         </FormLabel>
                                                         <FormControl>
@@ -360,7 +362,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <Instagram className="h-4 w-4 mr-2" />
+                                                            <Instagram className="h-4 w-4  " />
                                                             Instagram
                                                         </FormLabel>
                                                         <FormControl>
@@ -381,7 +383,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <MessageSquareText className="h-4 w-4 mr-2" />
+                                                            <MessageSquareText className="h-4 w-4  " />
                                                             WhatsApp
                                                         </FormLabel>
                                                         <FormControl>
@@ -402,7 +404,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <Twitter className="h-4 w-4 mr-2" />
+                                                            <Twitter className="h-4 w-4  " />
                                                             Twitter
                                                         </FormLabel>
                                                         <FormControl>
@@ -437,7 +439,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <CreditCard className="h-4 w-4 mr-2" />
+                                                            <CreditCard className="h-4 w-4  " />
                                                             Moeda Principal
                                                         </FormLabel>
                                                         <FormControl>
@@ -458,7 +460,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center">
-                                                            <Clock className="h-4 w-4 mr-2" />
+                                                            <Clock className="h-4 w-4  " />
                                                             Fuso Horário
                                                         </FormLabel>
                                                         <FormControl>
@@ -479,12 +481,11 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                 <div className="flex justify-end gap-3">
                                     <Button
                                         type="submit"
-                                        className="bg-rose-600 hover:bg-rose-700 text-white"
                                         disabled={isLoading || form.formState.isSubmitting}
                                     >
                                         {form.formState.isSubmitting ? (
                                             <>
-                                                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                                                <Loader className="  h-4 w-4 animate-spin" />
                                                 <span>Salvando...</span>
                                             </>
                                         ) : (

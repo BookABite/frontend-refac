@@ -20,6 +20,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import {
     AlertCircle,
+    Building,
     Building2,
     Globe,
     Image as ImageIcon,
@@ -55,10 +56,41 @@ const formSchema = z.object({
     banner_image: z.string().url('URL da imagem de banner inválida').optional().or(z.literal('')),
     website: z.string().url('URL do website inválida').optional().or(z.literal('')),
     address: z
-        .string()
-        .min(5, 'Endereço deve ter pelo menos 5 caracteres')
-        .optional()
-        .or(z.literal('')),
+        .array(
+            z.object({
+                cep: z.string().min(8, 'CEP deve ter 8 dígitos').optional().or(z.literal('')),
+                street: z
+                    .string()
+                    .min(2, 'Rua deve ter pelo menos 2 caracteres')
+                    .optional()
+                    .or(z.literal('')),
+                number: z.string().min(1, 'Número é obrigatório').optional().or(z.literal('')),
+                neighborhood: z
+                    .string()
+                    .min(2, 'Bairro deve ter pelo menos 2 caracteres')
+                    .optional()
+                    .or(z.literal('')),
+                city: z
+                    .string()
+                    .min(2, 'Cidade deve ter pelo menos 2 caracteres')
+                    .optional()
+                    .or(z.literal('')),
+                state: z
+                    .string()
+                    .min(2, 'Estado deve ter 2 caracteres')
+                    .optional()
+                    .or(z.literal('')),
+                country: z
+                    .string()
+                    .min(2, 'País deve ter pelo menos 2 caracteres')
+                    .optional()
+                    .or(z.literal('')),
+                complement: z.string().optional(),
+                maps_url: z.string().url('URL do mapa inválida').optional().or(z.literal('')),
+                unit_id: z.string().optional(),
+            })
+        )
+        .optional(),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -87,7 +119,20 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
             logo: '',
             banner_image: '',
             website: '',
-            address: '',
+            address: [
+                {
+                    cep: '',
+                    street: '',
+                    number: '',
+                    neighborhood: '',
+                    city: '',
+                    state: '',
+                    country: 'Brasil',
+                    complement: '',
+                    maps_url: '',
+                    unit_id: unitId || '',
+                },
+            ],
         },
     })
 
@@ -140,9 +185,25 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
     const onSubmit = async (data: FormValues) => {
         setIsLoading(true)
         try {
-            const payload = Object.fromEntries(
-                Object.entries(data).filter(([_, value]) => value !== null && value !== '')
-            )
+            const payload: any = { ...data }
+
+            // Filtra campos vazios e adiciona unit_id ao address se existir
+            Object.keys(payload).forEach((key) => {
+                if (
+                    payload[key] === null ||
+                    payload[key] === '' ||
+                    (Array.isArray(payload[key]) && payload[key].length === 0)
+                ) {
+                    delete payload[key]
+                }
+            })
+
+            if (payload.address && payload.address.length > 0) {
+                payload.address = payload.address.map((addr: any) => ({
+                    ...addr,
+                    unit_id: unitId,
+                }))
+            }
 
             const response = await fetch(`/api/unit/${unitId}`, {
                 method: 'PATCH',
@@ -150,6 +211,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                 body: JSON.stringify(payload),
             })
 
+            // Restante do código permanece o mesmo...
             if (response.ok) {
                 toast.success('Unidade atualizada com sucesso!')
                 await refreshUserData()
@@ -197,7 +259,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
 
     if (!unitId) {
         return (
-            <div className="flex flex-col items-center justify-center h-96">
+            <div className="flex flex-col items-center justify-center min-h-96">
                 <AlertCircle className="h-12 w-12 text-rose-600 mb-4" />
                 <h3 className="text-lg font-medium text-zinc-800">Nenhuma unidade selecionada</h3>
                 <p className="text-zinc-500 mt-2">
@@ -214,11 +276,12 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
             transition={{ duration: 0.5 }}
             className="w-full"
         >
-            <Card className="border border-zinc-200 shadow-sm">
+            <Card className="border border-zinc-200 shadow-sm h-full">
                 <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
                         <div>
-                            <CardTitle className="text-2xl font-medium text-zinc-800">
+                            <CardTitle className="flex gap-2 text-2xl font-medium text-zinc-800">
+                                <Building />
                                 Atualizar Unidade
                             </CardTitle>
                             <CardDescription className="mt-1 text-zinc-500">
@@ -246,7 +309,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                     )}
 
                     {isLoading && !form.formState.isSubmitting ? (
-                        <div className="h-96 flex items-center justify-center">
+                        <div className="h-[100vh] flex items-center justify-center">
                             <Loader className="h-8 w-8 text-rose-600 animate-spin" />
                             <span className="ml-2 text-zinc-500">Carregando dados...</span>
                         </div>
@@ -298,12 +361,12 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                                     >
                                                         {uploadingBanner ? (
                                                             <>
-                                                                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                                                                <Loader className="  h-4 w-4 animate-spin" />
                                                                 <span>Carregando...</span>
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <Upload className="mr-2 h-4 w-4" />
+                                                                <Upload className="  h-4 w-4" />
                                                                 <span>Aplicar</span>
                                                             </>
                                                         )}
@@ -319,7 +382,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center text-zinc-700">
-                                                            <Upload className="h-4 w-4 mr-2" />
+                                                            <Upload className="h-4 w-4  " />
                                                             Logo do restaurante
                                                         </FormLabel>
                                                         <FormControl>
@@ -391,7 +454,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center text-zinc-700">
-                                                            <Building2 className="h-4 w-4 mr-2" />
+                                                            <Building2 className="h-4 w-4  " />
                                                             Nome da unidade
                                                         </FormLabel>
                                                         <FormControl>
@@ -451,7 +514,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center text-zinc-700">
-                                                            <Mail className="h-4 w-4 mr-2" />
+                                                            <Mail className="h-4 w-4  " />
                                                             Email
                                                         </FormLabel>
                                                         <FormControl>
@@ -472,7 +535,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center text-zinc-700">
-                                                            <Phone className="h-4 w-4 mr-2" />
+                                                            <Phone className="h-4 w-4  " />
                                                             Telefone
                                                         </FormLabel>
                                                         <FormControl>
@@ -493,7 +556,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center text-zinc-700">
-                                                            <Globe className="h-4 w-4 mr-2" />
+                                                            <Globe className="h-4 w-4  " />
                                                             Website
                                                         </FormLabel>
                                                         <FormControl>
@@ -510,17 +573,158 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
 
                                             <FormField
                                                 control={form.control}
-                                                name="address"
+                                                name="address.0.street"
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="flex items-center text-zinc-700">
-                                                            <MapPin className="h-4 w-4 mr-2" />
-                                                            Endereço
+                                                            <MapPin className="h-4 w-4  " />
+                                                            Rua
                                                         </FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
-                                                                placeholder="Rua, número, bairro, cidade - UF"
+                                                                placeholder="Nome da rua"
+                                                                className="bg-zinc-50"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="address.0.number"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="flex items-center text-zinc-700">
+                                                            Número
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="Número"
+                                                                className="bg-zinc-50"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="address.0.complement"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="flex items-center text-zinc-700">
+                                                            Complemento
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="Complemento"
+                                                                className="bg-zinc-50"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="address.0.neighborhood"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="flex items-center text-zinc-700">
+                                                            Bairro
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="Bairro"
+                                                                className="bg-zinc-50"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="address.0.city"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="flex items-center text-zinc-700">
+                                                            Cidade
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="Cidade"
+                                                                className="bg-zinc-50"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="address.0.state"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="flex items-center text-zinc-700">
+                                                            Estado
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="UF"
+                                                                className="bg-zinc-50"
+                                                                maxLength={2}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="address.0.cep"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="flex items-center text-zinc-700">
+                                                            CEP
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="CEP"
+                                                                className="bg-zinc-50"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="address.0.maps_url"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="flex items-center text-zinc-700">
+                                                            URL do Mapa
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="https://maps.google.com/..."
                                                                 className="bg-zinc-50"
                                                             />
                                                         </FormControl>
@@ -542,17 +746,16 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                                     </Button>
                                     <Button
                                         type="submit"
-                                        className="bg-rose-600 hover:bg-rose-700 text-white"
                                         disabled={isLoading || form.formState.isSubmitting}
                                     >
                                         {form.formState.isSubmitting ? (
                                             <>
-                                                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                                                <Loader className="h-4 w-4 animate-spin" />
                                                 <span>Salvando...</span>
                                             </>
                                         ) : (
                                             <>
-                                                <SaveIcon className="mr-2 h-4 w-4" />
+                                                <SaveIcon className="h-4 w-4" />
                                                 <span>Salvar alterações</span>
                                             </>
                                         )}

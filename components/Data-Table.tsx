@@ -31,7 +31,17 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table'
-import { ArrowUpDown, ChevronDown, ChevronsLeft, ChevronsRight, Filter, Search } from 'lucide-react'
+import {
+    ArrowUpDown,
+    ChevronDown,
+    ChevronsLeft,
+    ChevronsRight,
+    ContactRound,
+    Filter,
+    Salad,
+    Search,
+    Users,
+} from 'lucide-react'
 import * as React from 'react'
 
 export const columns: ColumnDef<Booking>[] = [
@@ -147,6 +157,15 @@ export function DataTable({ bookings, isLoading, sizeClients }: DataTableProps) 
 
     return (
         <div className="flex w-full h-full flex-col rounded-lg border-none bg-white/90 p-4 shadow-sm transition-all duration-300 hover:shadow-md dark:bg-zinc-900/90">
+            <div className="flex flex-col items-start justify-center mb-4">
+                <p className="flex gap-2 text-xl items-center font-bold uppercase">
+                    <ContactRound size={20} />
+                    Clientes
+                </p>
+                <p className="text-sm font-light text-zinc-300">
+                    Visualização dos clientes cadastrados
+                </p>
+            </div>
             {isLoading ? (
                 <div className="flex h-full flex-col">
                     <div className="flex items-center justify-between">

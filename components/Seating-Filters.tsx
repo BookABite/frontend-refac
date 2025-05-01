@@ -65,7 +65,7 @@ export default function SeatingFilters({
                             date ? 'text-zinc-950' : 'text-zinc-500'
                         )}
                     >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        <CalendarIcon className="  h-4 w-4" />
                         {date
                             ? format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
                             : 'Selecione uma data'}

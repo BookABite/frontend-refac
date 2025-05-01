@@ -49,11 +49,20 @@ export const useWhatsApp = () => {
 
     const getSessionStatus = useCallback(async () => {
         try {
+            console.log('Fetching session status...')
             const response = await fetchWithAuthRef.current('/api/whatsapp/get-session-status')
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null)
+                const errorMessage = errorData?.error || response.statusText || 'Unknown error'
+                console.error('Failed to get session status:', errorMessage, errorData)
+                setError(`Failed to get session status: ${errorMessage}`)
+                return
+            }
             const data = await response.json()
             if (data.status) {
                 setSession(data.status)
             }
+            console.log('Session status data:', data)
         } catch (err) {
             console.error('Failed to get session status:', err)
         }
@@ -61,14 +70,18 @@ export const useWhatsApp = () => {
 
     const setupAblyEventListeners = useCallback(
         (channelInstance: Ably.RealtimeChannel, userId: string) => {
+            console.log('Setting up Ably event listeners...')
             channelInstance.subscribe('qr', (message: any) => {
+                console.log('QR code received:', message.data.qr)
                 setSession((prev) => ({
                     ...(prev || { userId, status: 'connecting' }),
                     qr: message.data.qr,
                 }))
             })
 
+            console.log('Event qr registered')
             channelInstance.subscribe('ready', () => {
+                console.log('Session is ready')
                 setSession((prev) => ({
                     ...(prev || { userId, status: 'connected' }),
                     status: 'connected',
@@ -76,15 +89,16 @@ export const useWhatsApp = () => {
                 }))
                 getSessionStatus()
             })
-
+            console.log('Event ready registered')
             channelInstance.subscribe('message', (message: any) => {
                 setMessages((prev) => [...prev, message.data])
             })
-
+            console.log('Event message registered')
             channelInstance.subscribe('sessionUpdate', (message: any) => {
+                console.log('Session update received:', message.data)
                 setSession(message.data)
             })
-
+            console.log('Event sessionUpdate registered')
             channelInstance.subscribe('logout', () => {
                 setSession((prev) => ({
                     ...(prev || { userId, status: 'disconnected' }),
@@ -109,24 +123,34 @@ export const useWhatsApp = () => {
                     qr: undefined,
                 }))
             })
+            console.log('All Ably event listeners setup')
         },
         [getSessionStatus]
     )
 
     const initializeAbly = useCallback(async () => {
         try {
+            console.log('Initializing Ably connection...')
             setIsLoading(true)
             const response = await fetchWithAuthRef.current(`api/ably?userId=${user?.group_id}`)
             const tokenDetails = await response.json()
+            console.log('Ably token details:', tokenDetails)
             const ablyInstance = new Ably.Realtime({ tokenDetails })
             setAbly(ablyInstance)
             const clientId = tokenDetails.clientId
             const channelName = `whatsapp:${clientId}`
             const channelInstance = ablyInstance.channels.get(channelName)
             setChannel(channelInstance)
+            console.log('Ably connection and channel setup successful.')
             setupAblyEventListeners(channelInstance, clientId)
+            console.log('initializeAbly function completed.')
             setIsLoading(false)
         } catch (err) {
+            if (err instanceof Error) {
+                console.error('Error during Ably initialization:', err.message)
+            } else {
+                console.error('An unknown error occurred during Ably initialization:', err)
+            }
             setError('Failed to initialize Ably connection')
             setIsLoading(false)
             console.error('Ably initialization error:', err)
@@ -146,6 +170,15 @@ export const useWhatsApp = () => {
             })
 
             const data = await response.json()
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null)
+                const errorMessage = errorData?.error || response.statusText || 'Unknown error'
+                console.error('Failed to start WhatsApp session:', errorMessage, errorData)
+                setError(`Failed to start WhatsApp session: ${errorMessage}`)
+                setIsLoading(false)
+                return
+            }
 
             if (data.qr) {
                 setSession({

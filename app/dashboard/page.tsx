@@ -14,21 +14,27 @@ import { useFetchBookings } from '@/hooks/use-bookings'
 import data from '@/types/dashboard-data'
 import { Group } from '@/types/interfaces'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { useAuth } from '../contexts/AuthContext'
 
 export default function Page() {
-    const { user, refreshUserData } = useAuth()
+    const { user, isAuthenticated, refreshUserData } = useAuth()
     const [group, setGroup] = useState<Group[]>([])
     const [selectedUnit, setSelectedUnit] = useState<string>(user?.unit_ids?.[2] || '')
     const [activeSection, setActiveSection] = useState('dashboard/overview')
     const { bookings, isLoading, setIsLoading, refetch } = useFetchBookings(selectedUnit)
 
-    const handleRefresh = () => {
-        setIsLoading(true)
-        refreshUserData().finally(() => {
-            refetch()
-        })
+    const handleRefresh = async () => {
+        try {
+            setIsLoading(true)
+            await refreshUserData()
+            await refetch()
+        } catch (error) {
+            toast.error('Erro ao atualizar os dados')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     useEffect(() => {
@@ -36,6 +42,8 @@ export default function Page() {
     }, [])
 
     useEffect(() => {
+        if (!user?.group_id) return
+
         const fetchGroup = async () => {
             const response = await fetch(`/api/group/${user?.group_id}`, {
                 method: 'GET',
@@ -47,7 +55,7 @@ export default function Page() {
             setGroup(data)
         }
         fetchGroup()
-    }, [user?.group_id, refetch])
+    }, [user?.group_id])
 
     const renderContent = () => {
         const menuItem = data.navMain.find((item) =>

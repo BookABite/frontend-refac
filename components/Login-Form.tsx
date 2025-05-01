@@ -64,7 +64,7 @@ export function LoginForm() {
             if (response.ok) {
                 const { access } = await response.json()
                 document.cookie = `access_token=${access}; path=/; max-age=86400; SameSite=Strict${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`
-                toast.success('🟢 Login realizado com sucesso!')
+                toast.success('Login realizado com sucesso!')
                 router.push('/dashboard')
             } else {
                 toast.error('Credenciais inválidas')

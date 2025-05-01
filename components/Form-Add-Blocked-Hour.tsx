@@ -81,7 +81,7 @@ export const AddBlockedHourForm = ({
 
             <div className="flex justify-end">
                 <Button onClick={onAdd} className="text-zinc-300">
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4" />
                     Adicionar Bloqueio
                 </Button>
             </div>

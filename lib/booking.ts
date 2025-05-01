@@ -12,7 +12,6 @@ export async function fetchBookings(selectedUnit: string) {
         return response.data || []
     } catch (error) {
         console.error('Erro ao buscar reservas:', error)
-        toast.error('Erro ao carregar as reservas')
         return []
     }
 }

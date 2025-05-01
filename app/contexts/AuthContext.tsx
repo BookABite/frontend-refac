@@ -29,6 +29,7 @@ interface AuthContextType {
     user: UserData | null
     token: string | null
     isLoading: boolean
+    isAuthenticated: boolean
     refreshUserData: () => Promise<void>
 }
 
@@ -38,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter()
     const [user, setUser] = useState<UserData | null>(null)
     const [token, setToken] = useState<string | null>(null)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
 
     const fetchGroupData = async (groupId: string) => {
@@ -55,22 +57,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const fetchUserData = async () => {
         try {
+            setIsLoading(true)
             const response = await fetch('/api/auth/permissions')
 
             if (response.ok) {
                 const userData = await response.json()
+
+                if (!userData.group_id || !userData.unit_ids) {
+                    throw new Error('Dados do usuário incompletos')
+                }
+
                 const groupData = await fetchGroupData(userData.group_id)
 
                 setUser({
                     ...userData,
                     group: groupData,
                 })
+                setIsAuthenticated(true)
             } else {
                 throw new Error('Failed to fetch permissions')
             }
         } catch (error) {
             console.error('Error:', error)
             setUser(null)
+            setIsAuthenticated(false)
+            router.push('/login')
         } finally {
             setIsLoading(false)
         }
@@ -97,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user, token, isLoading, refreshUserData }}>
+        <AuthContext.Provider value={{ user, token, isLoading, isAuthenticated, refreshUserData }}>
             {children}
         </AuthContext.Provider>
     )

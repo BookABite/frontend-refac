@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { motion } from 'framer-motion'
-import { Save } from 'lucide-react'
+import { CalendarClock, CalendarCog, CalendarX2, Save } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -171,131 +171,151 @@ const SettingsHours = ({ user }: any) => {
     }, [group_id, unitId])
 
     return (
-        <motion.div
-            className="container py-10 mx-auto space-y-6"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-        >
-            <motion.div variants={itemVariants}>
-                <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
-                <p className="mt-2 text-muted-foreground">
-                    Gerencie os horários de funcionamento e bloqueios da sua unidade.
-                </p>
-            </motion.div>
+        <Card className="w-full">
+            <CardHeader>
+                <motion.div variants={itemVariants}>
+                    <h1 className="flex gap-2 items-center text-3xl font-bold tracking-tight">
+                        <CalendarCog />
+                        Configurações
+                    </h1>
+                    <p className="mt-2 text-muted-foreground">
+                        Gerencie os horários de funcionamento e bloqueios da sua unidade.
+                    </p>
+                </motion.div>
+            </CardHeader>
 
-            <motion.div variants={itemVariants}>
-                <GroupInfo unitId={unitId} onUnitChange={setUnitId} user={user} />
-            </motion.div>
+            <Separator />
 
-            <Separator className="my-6" />
+            <motion.div
+                className="container  mx-auto space-y-6"
+                initial="hidden"
+                animate="visible"
+                variants={containerVariants}
+            >
+                <CardContent className="space-y-6">
+                    <motion.div variants={itemVariants}>
+                        <GroupInfo unitId={unitId} onUnitChange={setUnitId} user={user} />
+                    </motion.div>
+                    <Tabs defaultValue="working-hours" className="w-full">
+                        <TabsList className="grid w-full max-w-md grid-cols-2">
+                            <TabsTrigger value="working-hours">
+                                Horários de Funcionamento
+                            </TabsTrigger>
+                            <TabsTrigger value="blocked-hours">Horários Bloqueados</TabsTrigger>
+                        </TabsList>
 
-            <Tabs defaultValue="working-hours" className="w-full">
-                <TabsList className="grid w-full max-w-md grid-cols-2">
-                    <TabsTrigger value="working-hours">Horários de Funcionamento</TabsTrigger>
-                    <TabsTrigger value="blocked-hours">Horários Bloqueados</TabsTrigger>
-                </TabsList>
+                        <TabsContent value="working-hours">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex gap-2 items-center">
+                                        <CalendarClock />
+                                        Horários de Funcionamento
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Configure os horários de abertura e fechamento de cada dia
+                                        da semana.
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <motion.div
+                                        className="space-y-4"
+                                        variants={containerVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                    >
+                                        {workingHours.map((workingHour, index) => {
+                                            const dayLabel =
+                                                weekDays.find(
+                                                    (day) => day.value === workingHour.day_of_week
+                                                )?.label || ''
+                                            return (
+                                                <WorkingHoursDay
+                                                    key={workingHour.day_of_week}
+                                                    workingHour={workingHour}
+                                                    dayLabel={dayLabel}
+                                                    onUpdate={(field, value) =>
+                                                        updateWorkingHour(index, field, value)
+                                                    }
+                                                />
+                                            )
+                                        })}
 
-                <TabsContent value="working-hours">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Horários de Funcionamento</CardTitle>
-                            <CardDescription>
-                                Configure os horários de abertura e fechamento de cada dia da
-                                semana.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <motion.div
-                                className="space-y-4"
-                                variants={containerVariants}
-                                initial="hidden"
-                                animate="visible"
-                            >
-                                {workingHours.map((workingHour, index) => {
-                                    const dayLabel =
-                                        weekDays.find(
-                                            (day) => day.value === workingHour.day_of_week
-                                        )?.label || ''
-                                    return (
-                                        <WorkingHoursDay
-                                            key={workingHour.day_of_week}
-                                            workingHour={workingHour}
-                                            dayLabel={dayLabel}
-                                            onUpdate={(field, value) =>
-                                                updateWorkingHour(index, field, value)
+                                        <div className="flex justify-end mt-6">
+                                            <Button
+                                                onClick={saveWorkingHours}
+                                                className="dark:text-white"
+                                            >
+                                                <Save className="w-4 h-4" />
+                                                Salvar Alterações
+                                            </Button>
+                                        </div>
+                                    </motion.div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="blocked-hours">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex gap-2 items-center text-zinc-950 dark:text-zinc-300">
+                                        <CalendarX2 />
+                                        Horários Bloqueados
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Adicione períodos específicos em que a unidade estará
+                                        fechada ou indisponível.
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <motion.div
+                                        className="space-y-6"
+                                        variants={containerVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                    >
+                                        <AddBlockedHourForm
+                                            newBlockedHour={newBlockedHour}
+                                            onAdd={addBlockedHour}
+                                            onChange={(field, value) =>
+                                                setNewBlockedHour({
+                                                    ...newBlockedHour,
+                                                    [field]: value,
+                                                })
                                             }
                                         />
-                                    )
-                                })}
 
-                                <div className="flex justify-end mt-6">
-                                    <Button onClick={saveWorkingHours} className="dark:text-white">
-                                        <Save className="w-4 h-4 mr-2" />
-                                        Salvar Alterações
-                                    </Button>
-                                </div>
-                            </motion.div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
+                                        <div className="space-y-2">
+                                            <h3 className="text-sm font-medium text-zinc-950 dark:text-zinc-300">
+                                                Bloqueios Ativos
+                                            </h3>
 
-                <TabsContent value="blocked-hours">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-zinc-950 dark:text-zinc-300">
-                                Horários Bloqueados
-                            </CardTitle>
-                            <CardDescription>
-                                Adicione períodos específicos em que a unidade estará fechada ou
-                                indisponível.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <motion.div
-                                className="space-y-6"
-                                variants={containerVariants}
-                                initial="hidden"
-                                animate="visible"
-                            >
-                                <AddBlockedHourForm
-                                    newBlockedHour={newBlockedHour}
-                                    onAdd={addBlockedHour}
-                                    onChange={(field, value) =>
-                                        setNewBlockedHour({ ...newBlockedHour, [field]: value })
-                                    }
-                                />
-
-                                <div className="space-y-2">
-                                    <h3 className="text-sm font-medium text-zinc-950 dark:text-zinc-300">
-                                        Bloqueios Ativos
-                                    </h3>
-
-                                    {blockedHours.length === 0 ? (
-                                        <p className="text-sm text-muted-foreground">
-                                            Nenhum horário bloqueado no momento.
-                                        </p>
-                                    ) : (
-                                        <motion.div
-                                            className="space-y-2"
-                                            variants={containerVariants}
-                                        >
-                                            {blockedHours.map((blockedHour, index) => (
-                                                <BlockedHourItem
-                                                    key={blockedHour.id || index}
-                                                    blockedHour={blockedHour}
-                                                    onRemove={removeBlockedHour}
-                                                />
-                                            ))}
-                                        </motion.div>
-                                    )}
-                                </div>
-                            </motion.div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-        </motion.div>
+                                            {blockedHours.length === 0 ? (
+                                                <p className="text-sm text-muted-foreground">
+                                                    Nenhum horário bloqueado no momento.
+                                                </p>
+                                            ) : (
+                                                <motion.div
+                                                    className="space-y-2"
+                                                    variants={containerVariants}
+                                                >
+                                                    {blockedHours.map((blockedHour, index) => (
+                                                        <BlockedHourItem
+                                                            key={blockedHour.id || index}
+                                                            blockedHour={blockedHour}
+                                                            onRemove={removeBlockedHour}
+                                                        />
+                                                    ))}
+                                                </motion.div>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
+                </CardContent>
+            </motion.div>
+        </Card>
     )
 }
 

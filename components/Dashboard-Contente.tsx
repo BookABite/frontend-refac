@@ -55,7 +55,7 @@ export function DashboardContent({ bookings, isLoading, group }: DashboardConten
 
                 {/* DataTable */}
                 <div className="flex-1">
-                    <DataTable bookings={bookings} isLoading={isLoading} sizeClients={6} />
+                    <DataTable bookings={bookings} isLoading={isLoading} sizeClients={5} />
                 </div>
             </div>
 

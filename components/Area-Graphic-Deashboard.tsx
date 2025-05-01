@@ -111,7 +111,7 @@ const AreaDashboard = ({ isLoading }: AreaDashboardProps) => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex items-center justify-center px-2 pb-6">
-                        <Skeleton className="h-[280px] w-full rounded-lg" />
+                        <Skeleton className="h-[150px] w-full rounded-lg" />
                     </CardContent>
                 </Card>
             ) : (

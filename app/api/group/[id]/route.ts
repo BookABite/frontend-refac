@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
-        const { id } = params
+        const { id } = await params
 
         if (!id) {
             return NextResponse.json({ error: 'Restaurant id is required' }, { status: 400 })

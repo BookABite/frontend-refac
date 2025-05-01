@@ -17,7 +17,7 @@ const CardBookings = ({ totalRevenue, title, icon, className, isLoading }: CardB
     return (
         <>
             {isLoading ? (
-                <Card className="rounded-lg border-none bg-white/5 shadow-sm backdrop-blur-sm transition-all duration-300 dark:bg-zinc-900/50">
+                <Card className="rounded-lg h-full border-none bg-white/5 shadow-sm backdrop-blur-sm transition-all duration-300 dark:bg-zinc-900/50">
                     <CardHeader className="pb-2">
                         <CardTitle className="flex items-center justify-between text-base font-medium text-zinc-400">
                             <Skeleton className="h-6 w-full" />
