@@ -36,17 +36,17 @@ const data = {
                 },
             ],
         },
-        {
-            title: 'Chat',
-            value: 'chat',
-            icon: BotMessageSquare,
-            items: [
-                {
-                    title: 'Iniciar Chat',
-                    value: '/chat/new',
-                },
-            ],
-        },
+        // {
+        //     title: 'Chat',
+        //     value: 'chat',
+        //     icon: BotMessageSquare,
+        //     items: [
+        //         {
+        //             title: 'Iniciar Chat',
+        //             value: '/chat/new',
+        //         },
+        //     ],
+        // },
         {
             title: 'Configuração',
             value: 'settings',

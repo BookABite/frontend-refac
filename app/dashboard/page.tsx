@@ -51,6 +51,7 @@ export default function Page() {
                     'Content-Type': 'application/json',
                 },
             })
+
             const data = await response.json()
             setGroup(data)
         }
@@ -103,9 +104,7 @@ export default function Page() {
                 )
             case '/chat/new':
                 return (
-                    <div className="flex h-full w-full gap-4">
-                        <WhatsAppIntegration />
-                    </div>
+                    <div className="flex h-full w-full gap-4">{/* <WhatsAppIntegration /> */}</div>
                 )
             case '/settings/group':
                 return (
@@ -137,11 +136,7 @@ export default function Page() {
                 selectedUnit={selectedUnit}
                 setSelectedUnit={setSelectedUnit}
                 setActiveSction={setActiveSection}
-                user={{
-                    name: user?.group?.name || '',
-                    email: user?.email || '',
-                    avatar: user?.group?.logo || '',
-                }}
+                userId={user?.group_id || ''}
             />
             <SidebarInset>
                 <header className="flex h-10 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
