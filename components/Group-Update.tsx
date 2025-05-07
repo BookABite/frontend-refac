@@ -31,7 +31,6 @@ import {
     Save,
     Twitter,
 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -60,7 +59,6 @@ interface GroupUpdateProps {
 }
 
 export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
-    const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -152,7 +150,7 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
         >
             <Card className="border border-zinc-200 shadow-sm">
                 <CardHeader className="pb-4">
-                    <CardTitle className="flex gap-2 text-2xl font-medium text-zinc-800">
+                    <CardTitle className="flex items-center gap-2 text-2xl font-medium text-zinc-800">
                         <Building2 />
                         Configurações do Negócio
                     </CardTitle>
@@ -484,10 +482,10 @@ export function GroupUpdate({ groupId, initialData }: GroupUpdateProps) {
                                         disabled={isLoading || form.formState.isSubmitting}
                                     >
                                         {form.formState.isSubmitting ? (
-                                            <>
+                                            <span className="flex items-center gap-2">
                                                 <Loader className="  h-4 w-4 animate-spin" />
                                                 <span>Salvando...</span>
-                                            </>
+                                            </span>
                                         ) : (
                                             <span className="flex items-center gap-2">
                                                 <Save className="h-4 w-4" />

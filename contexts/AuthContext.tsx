@@ -64,11 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (response.ok) {
                 const userData = await response.json()
 
-                if (!userData.group_id || !userData.unit_ids) {
-                    throw new Error('Dados do usuário incompletos')
-                }
-
-                const groupData = await fetchGroupData(userData.group_id)
+                const groupData = userData.group_id ? await fetchGroupData(userData.group_id) : null
 
                 setUser({
                     ...userData,
@@ -76,10 +72,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 })
                 setIsAuthenticated(true)
             } else {
-                throw new Error('Failed to fetch permissions')
+                const errorData = await response.json()
+                throw new Error(errorData.error || 'Failed to fetch permissions')
             }
         } catch (error) {
-            console.error('Error:', error)
+            console.error('Auth error:', error)
+            document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
             setUser(null)
             setIsAuthenticated(false)
             router.push('/login')
@@ -94,18 +92,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     useEffect(() => {
-        const token = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('access_token='))
-            ?.split('=')[1]
-
-        setToken(token ?? null)
-        if (!token) {
-            router.push('/login')
-            setIsLoading(false)
-        } else {
-            fetchUserData()
+        const getTokenFromCookie = () => {
+            return (
+                document.cookie
+                    .split('; ')
+                    .find((row) => row.startsWith('access_token='))
+                    ?.split('=')[1] || null
+            )
         }
+
+        const checkAuth = async () => {
+            const token = getTokenFromCookie()
+            setToken(token)
+
+            if (token) {
+                await fetchUserData()
+            } else {
+                setIsAuthenticated(false)
+                setIsLoading(false)
+            }
+        }
+
+        checkAuth()
     }, [])
 
     return (

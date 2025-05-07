@@ -62,7 +62,7 @@ export function DashboardContent({ bookings, isLoading, group }: DashboardConten
                         isLoading={isLoading}
                         pageSize={5}
                         filterField="first_name"
-                        filterPlaceholder="Filtrar reservas..."
+                        filterPlaceholder="Filtrar pelo nome"
                     />
                 </div>
             </div>

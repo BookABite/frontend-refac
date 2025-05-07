@@ -1,4 +1,4 @@
-import { useAuth } from '@/app/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import Ably from 'ably'
 import { useCallback, useEffect, useRef, useState } from 'react'
 

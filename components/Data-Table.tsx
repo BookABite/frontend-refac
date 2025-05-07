@@ -115,8 +115,8 @@ export const createPhoneColumn = <T,>(): ColumnDef<T> => ({
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g
                             id="SVGRepo_tracerCarrier"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                         ></g>
                         <g id="SVGRepo_iconCarrier">
                             {' '}
@@ -275,7 +275,7 @@ export function DataTable<T>({
                     <div className="mt-4 flex-1 space-y-3">
                         <Skeleton className="h-10 w-full rounded-md" />
                         <div className="grid w-full gap-3">
-                            {Array.from({ length: 5 }).map((_, index) => (
+                            {Array.from({ length: pageSize }).map((_, index) => (
                                 <Skeleton key={index} className="h-12 w-full rounded-md" />
                             ))}
                         </div>
@@ -405,7 +405,7 @@ export function DataTable<T>({
                         </Table>
                     </div>
 
-                    <div className="mt-3 flex items-center justify-between py-2">
+                    <div className="mt-2 flex items-center justify-between py-2">
                         <div className="text-xs text-zinc-500 dark:text-zinc-400">
                             {table.getFilteredSelectedRowModel().rows.length} de{' '}
                             {table.getFilteredRowModel().rows.length} linha(s) selecionada
@@ -417,9 +417,9 @@ export function DataTable<T>({
                                 size="sm"
                                 onClick={() => table.previousPage()}
                                 disabled={!table.getCanPreviousPage()}
-                                className="h-8 rounded-lg border-zinc-200 px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                                className="h-6 rounded-lg border-zinc-200 px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
                             >
-                                <ChevronsLeft className="mr-1 h-3.5 w-3.5" />
+                                <ChevronsLeft className="h-3.5 w-3.5" />
                                 Anterior
                             </Button>
                             <Button
@@ -427,10 +427,10 @@ export function DataTable<T>({
                                 size="sm"
                                 onClick={() => table.nextPage()}
                                 disabled={!table.getCanNextPage()}
-                                className="h-8 rounded-lg border-zinc-200 px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                                className="h-6 rounded-lg border-zinc-200 px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
                             >
                                 Próximo
-                                <ChevronsRight className="ml-1 h-3.5 w-3.5" />
+                                <ChevronsRight className="h-3.5 w-3.5" />
                             </Button>
                         </div>
                     </div>

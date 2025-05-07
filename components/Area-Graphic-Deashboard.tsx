@@ -120,7 +120,9 @@ const AreaDashboard = ({ isLoading }: AreaDashboardProps) => {
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <CardTitle className="flex items-center gap-2 text-lg font-medium text-zinc-800 dark:text-zinc-200">
-                                    <BarChartIcon className="h-5 w-5 text-primary" />
+                                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50">
+                                        <BarChartIcon className="h-5 w-5 text-primary" />
+                                    </span>
                                     Análise de Reservas
                                 </CardTitle>
                                 <CardDescription className="text-xs text-zinc-500 dark:text-zinc-400">

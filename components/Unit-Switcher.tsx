@@ -1,6 +1,5 @@
 'use client'
 
-import { useAuth } from '@/app/contexts/AuthContext'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,6 +15,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/contexts/AuthContext'
 import { ChevronsUpDown } from 'lucide-react'
 import * as React from 'react'
 
@@ -26,7 +26,7 @@ interface TeamSwitcherProps {
 
 export function TeamSwitcher({ selectedUnit, setSelectedUnit }: TeamSwitcherProps) {
     const { isMobile } = useSidebar()
-    const { user, isLoading } = useAuth()
+    const { user } = useAuth()
 
     React.useEffect(() => {
         if (user?.unit_ids?.length && !selectedUnit) {
@@ -34,7 +34,7 @@ export function TeamSwitcher({ selectedUnit, setSelectedUnit }: TeamSwitcherProp
         }
     }, [user, selectedUnit])
 
-    if (isLoading || !user) {
+    if (!user) {
         return (
             <SidebarMenu>
                 <SidebarMenuItem>
@@ -67,7 +67,7 @@ export function TeamSwitcher({ selectedUnit, setSelectedUnit }: TeamSwitcherProp
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
                         >
                             <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                                 <span className="text-xl font-bold">
@@ -103,7 +103,7 @@ export function TeamSwitcher({ selectedUnit, setSelectedUnit }: TeamSwitcherProp
                             <DropdownMenuItem
                                 key={unit.unit_id}
                                 onClick={() => setSelectedUnit(unit.unit_id)}
-                                className="gap-2 p-2"
+                                className="gap-2 p-2 cursor-pointer"
                             >
                                 <div className="flex size-6 items-center justify-center rounded-md border cursor-pointer">
                                     <span className="text-xs font-medium">

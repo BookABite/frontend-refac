@@ -1,6 +1,5 @@
 'use client'
 
-import { useAuth } from '@/app/contexts/AuthContext'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -16,6 +15,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuth } from '@/contexts/AuthContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import {
@@ -280,7 +280,7 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                 <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
                         <div>
-                            <CardTitle className="flex gap-2 text-2xl font-medium text-zinc-800">
+                            <CardTitle className="flex gap-2 items-center text-2xl font-medium text-zinc-800">
                                 <Building />
                                 Atualizar Unidade
                             </CardTitle>
@@ -309,8 +309,8 @@ export function UnitUpdateForm({ unitId }: UnitUpdateFormProps) {
                     )}
 
                     {isLoading && !form.formState.isSubmitting ? (
-                        <div className="h-[100vh] flex items-center justify-center">
-                            <Loader className="h-8 w-8 text-rose-600 animate-spin" />
+                        <div className="h-[100vh] flex flex-col items-center justify-center">
+                            <Loader className="h-8 w-8 animate-spin" />
                             <span className="ml-2 text-zinc-500">Carregando dados...</span>
                         </div>
                     ) : (

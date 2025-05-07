@@ -62,6 +62,18 @@ export default function SeatingLayout({ bookings, isLoading }: SeatingLayoutProp
                 </div>
             ) : (
                 <>
+                    <div className="flex flex-col items-start justify-center mb-4 ml-2">
+                        <span className="flex items-center gap-2 text-xl font-bold uppercase">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50">
+                                <Salad className="h-5 w-5 text-emerald-500" />
+                            </span>
+                            reservas
+                        </span>
+                        <p className="ml-2 text-sm font-light text-zinc-300">
+                            Visualização de mesas reservadas para o dia
+                        </p>
+                    </div>
+
                     <SeatingFilters
                         selectedTab={selectedTab}
                         onTabChange={setSelectedTab}
@@ -69,15 +81,6 @@ export default function SeatingLayout({ bookings, isLoading }: SeatingLayoutProp
                         onDateChange={setDate}
                     />
 
-                    <div className="flex flex-col items-start justify-center mb-4">
-                        <p className="flex gap-2 text-xl font-bold uppercase">
-                            <Salad />
-                            reservas
-                        </p>
-                        <p className="text-sm font-light text-zinc-300">
-                            Visualização de mesas reservadas para o dia
-                        </p>
-                    </div>
                     <div className="flex flex-col items-center justify-center space-y-10">
                         <div className="flex flex-col items-start">
                             {Array(Math.ceil(filteredTables.length / 5))

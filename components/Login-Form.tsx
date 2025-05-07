@@ -64,6 +64,8 @@ export function LoginForm() {
             if (response.ok) {
                 const { access } = await response.json()
                 document.cookie = `access_token=${access}; path=/; max-age=86400; SameSite=Strict${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`
+                console.log('Access:', document.cookie)
+                console.log('Token:', access)
                 toast.success('Login realizado com sucesso!')
                 router.push('/dashboard')
             } else {
