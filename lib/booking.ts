@@ -1,4 +1,4 @@
-import { reservationApi } from '@/utils/resrvation-api'
+import { reservationApi } from '@/lib/resrvation-api'
 import { toast } from 'sonner'
 
 export async function fetchBookings(selectedUnit: string) {

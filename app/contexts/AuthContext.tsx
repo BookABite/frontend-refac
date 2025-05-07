@@ -21,6 +21,7 @@ export interface UserData {
     is_superuser: boolean
     role: string
     group_id: string
+    custom_user_id: string
     unit_ids: string[]
     group?: GroupData
 }

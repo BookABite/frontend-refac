@@ -1,8 +1,8 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 import { Booking } from '@/types/interfaces'
+import { cn } from '@/utils/utils'
 import { CircleCheckBig } from 'lucide-react'
 import { useState } from 'react'
 

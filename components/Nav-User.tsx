@@ -30,10 +30,10 @@ interface UserData {
 }
 
 interface NavUserProps {
-    userId: string // Agora recebemos apenas o ID do usuário
+    custom_user_id: string
 }
 
-export function NavUser({ userId }: NavUserProps) {
+export function NavUser({ custom_user_id }: NavUserProps) {
     const router = useRouter()
     const { isMobile } = useSidebar()
     const [isLoading, setIsLoading] = useState(false)
@@ -43,11 +43,11 @@ export function NavUser({ userId }: NavUserProps) {
     // Buscar dados do usuário da API
     useEffect(() => {
         const fetchUserData = async () => {
-            if (!userId) return
+            if (!custom_user_id) return
 
             setIsLoadingUser(true)
             try {
-                const response = await fetch(`/api/user/${userId}`)
+                const response = await fetch(`/api/user/${custom_user_id}`)
 
                 if (!response.ok) {
                     throw new Error('Falha ao carregar dados do usuário')
@@ -64,7 +64,7 @@ export function NavUser({ userId }: NavUserProps) {
         }
 
         fetchUserData()
-    }, [userId])
+    }, [custom_user_id])
 
     const handleLogout = async () => {
         setIsLoading(true)

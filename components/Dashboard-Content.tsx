@@ -1,9 +1,10 @@
 import { Booking } from '@/types/interfaces'
-import { CalendarCheck2, CalendarPlus, CalendarX2 } from 'lucide-react'
+import { CalendarCheck, CalendarCheck2, CalendarPlus, CalendarX2 } from 'lucide-react'
 
 import AreaDashboard from './Area-Graphic-Deashboard'
 import CalendarBooking from './Calendar-Bookings'
 import CardBookings from './Card-Bookings'
+import { bookingColumns } from './ColumnDef-Booking-Dashboard'
 import { DataTable } from './Data-Table'
 
 interface DashboardContentProps {
@@ -55,7 +56,14 @@ export function DashboardContent({ bookings, isLoading, group }: DashboardConten
 
                 {/* DataTable */}
                 <div className="flex-1">
-                    <DataTable bookings={bookings} isLoading={isLoading} sizeClients={5} />
+                    <DataTable
+                        data={bookings}
+                        columns={bookingColumns}
+                        isLoading={isLoading}
+                        pageSize={5}
+                        filterField="first_name"
+                        filterPlaceholder="Filtrar reservas..."
+                    />
                 </div>
             </div>
 

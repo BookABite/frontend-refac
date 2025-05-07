@@ -1,7 +1,8 @@
 'use client'
 
 import { AppSidebar } from '@/components/App-Sidebar'
-import { DashboardContent } from '@/components/Dashboard-Contente'
+import { bookingColumns } from '@/components/ColumnDef-Booking-Client'
+import { DashboardContent } from '@/components/Dashboard-Content'
 import { DataTable } from '@/components/Data-Table'
 import { GroupUpdate } from '@/components/Group-Update'
 import { Header } from '@/components/Header-Sidebar'
@@ -12,7 +13,8 @@ import WhatsAppIntegration from '@/components/Whatsapp-Integration'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { useFetchBookings } from '@/hooks/use-bookings'
 import data from '@/types/dashboard-data'
-import { Group } from '@/types/interfaces'
+import { Booking, Group } from '@/types/interfaces'
+import { CalendarCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -93,7 +95,14 @@ export default function Page() {
             case '/clients/list':
                 return (
                     <div className="flex w-full h-full gap-4">
-                        <DataTable bookings={bookings} isLoading={isLoading} sizeClients={16} />
+                        <DataTable<Booking>
+                            data={bookings}
+                            columns={bookingColumns}
+                            isLoading={isLoading}
+                            pageSize={10}
+                            filterField="Filtrar clientes..."
+                            filterPlaceholder="Nome"
+                        />
                     </div>
                 )
             case '/clients/add':
@@ -136,7 +145,7 @@ export default function Page() {
                 selectedUnit={selectedUnit}
                 setSelectedUnit={setSelectedUnit}
                 setActiveSction={setActiveSection}
-                userId={user?.group_id || ''}
+                custom_user_id={user?.custom_user_id || ''}
             />
             <SidebarInset>
                 <header className="flex h-10 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
