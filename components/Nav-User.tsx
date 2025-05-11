@@ -15,12 +15,13 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/contexts/AuthContext'
-import { BadgeCheck, Bell, ChevronsUpDown, LogOut, Sparkles } from 'lucide-react'
+import { BadgeCheck, Bell, ChevronsUpDown, Key, LogOut, Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { AccountEditModal } from './Account-User-Edit-Modal'
+import { ChangePasswordModal } from './Change-Password'
 
 interface UserData {
     name: string
@@ -45,6 +46,7 @@ export function NavUser({ custom_user_id, unitId, onUnitChange }: NavUserProps) 
     const [userData, setUserData] = useState<UserData | null>(null)
     const [isLoadingUser, setIsLoadingUser] = useState(true)
     const [isAccountModalOpen, setIsAccountModalOpen] = useState(false)
+    const [isUpdatePasswordModalOpen, setIsUpdatePasswordModalOpen] = useState(false)
 
     const { token } = useAuth()
 
@@ -195,9 +197,12 @@ export function NavUser({ custom_user_id, unitId, onUnitChange }: NavUserProps) 
                                     <BadgeCheck className="mr-2 h-4 w-4" />
                                     Account
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="cursor-pointer">
-                                    <Bell className="mr-2 h-4 w-4" />
-                                    Notifications
+                                <DropdownMenuItem
+                                    onClick={() => setIsUpdatePasswordModalOpen(true)}
+                                    className="cursor-pointer"
+                                >
+                                    <Key className="mr-2 h-4 w-4" />
+                                    Alterar Senha
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
@@ -222,6 +227,13 @@ export function NavUser({ custom_user_id, unitId, onUnitChange }: NavUserProps) 
                 onSuccess={fetchUserData}
                 unitId={unitId || ''}
                 onUnitChange={onUnitChange || (() => {})}
+            />
+
+            <ChangePasswordModal
+                isOpen={isUpdatePasswordModalOpen}
+                onClose={() => setIsUpdatePasswordModalOpen(false)}
+                userId={custom_user_id}
+                onSuccess={fetchUserData}
             />
         </>
     )

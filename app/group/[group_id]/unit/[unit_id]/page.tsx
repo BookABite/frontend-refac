@@ -1,6 +1,7 @@
 'use client'
 
 import { ClientBooking } from '@/components/Client-Booking'
+import { ReviewDialog } from '@/components/Review-Modal'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { simplifyHours } from '@/types/hours-simplified'
@@ -24,31 +25,51 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
     const [isLoading, setIsLoading] = useState(true)
     const [unit, setUnit] = useState<UnitInfo | null>(null)
     const [activeSection, setActiveSection] = useState('info')
+    const [reviews, setReviews] = useState<{ stars: number }[]>([])
 
-    useEffect(
-        function fetchRestaurant() {
-            const fetchRestaurant = async () => {
-                try {
-                    const response = await fetch(`/api/unit/${unit_id}`)
+    const fetchRestaurant = async () => {
+        try {
+            const response = await fetch(`/api/unit/${unit_id}`)
 
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch restaurant')
-                    }
-
-                    const data = await response.json()
-                    setUnit(data)
-                } catch (error) {
-                    console.error(error)
-                    toast.error('Erro ao encontrar o restaurante')
-                } finally {
-                    setIsLoading(false)
-                }
+            if (!response.ok) {
+                throw new Error('Failed to fetch restaurant')
             }
 
-            if (unit_id && group_id) fetchRestaurant()
-        },
-        [group_id, unit_id]
-    )
+            const data = await response.json()
+            setUnit(data)
+        } catch (error) {
+            console.error(error)
+            toast.error('Erro ao encontrar o restaurante')
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const fetchReviews = async () => {
+        try {
+            const response = await fetch(`/api/review/${unit_id}`)
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch reviews')
+            }
+
+            const data = await response.json()
+            setReviews(data.ratings || [])
+        } catch (error) {
+            console.error(error)
+            toast.error('Erro ao encontrar as avaliações')
+        }
+    }
+
+    useEffect(() => {
+        fetchRestaurant()
+        fetchReviews()
+    }, [group_id, unit_id])
+
+    const averageRating =
+        reviews.length > 0
+            ? reviews.reduce((sum, review) => sum + review.stars, 0) / reviews.length
+            : 0
 
     const handleNext = () => {
         setShowForm(true)
@@ -121,7 +142,6 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
 
     return (
         <div className="relative mx-auto max-w-4xl pb-5">
-            {/* Hero Image */}
             <div className="relative h-48 w-full overflow-hidden rounded-b-3xl md:h-80">
                 <Image
                     src={unit.banner_image || '/back.png'}
@@ -133,7 +153,6 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                 />
             </div>
 
-            {/* Restaurant Logo */}
             <div className="relative mx-auto -mt-20 flex justify-center z-20">
                 <Image
                     src={unit.logo || '/default-restaurant-image.png'}
@@ -146,7 +165,6 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                 />
             </div>
 
-            {/* Restaurant Info */}
             <div className="mt-6 px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -155,32 +173,29 @@ const RestaurantInformation = ({ params }: PageParamsProps) => {
                     className="text-center"
                 >
                     <h1 className="text-3xl font-bold tracking-tight">{unit.name}</h1>
-                    <div className="mt-2 flex items-center justify-center gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        ))}
-                        <span className="ml-2 text-sm text-muted-foreground">127 avaliações</span>
+                    <div className="mt-2 flex flex-col items-center justify-center gap-1">
+                        <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                    key={star}
+                                    className={`h-4 w-4 ${star <= Math.round(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
+                                />
+                            ))}
 
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="ml-2 text-sm text-muted-foreground underline cursor-pointer"
-                                >
-                                    <Binoculars className="h-4 w-4 text-primary" />
-                                    Avaliar
-                                </Button>
-                            </DialogTrigger>
+                            <span className="ml-2 text-sm text-muted-foreground">
+                                {reviews.length} avaliações
+                            </span>
+                        </div>
 
-                            <DialogContent>
-                                <DialogTitle>Avaliações</DialogTitle>
-                            </DialogContent>
-                        </Dialog>
+                        <ReviewDialog
+                            unitId={unit_id}
+                            unitName={unit.name}
+                            onReviewSubmit={fetchReviews}
+                        />
                     </div>
                     <p className="mt-4 text-sm text-muted-foreground italic">{unit.description}</p>
                 </motion.div>
 
-                {/* Navigation Tabs */}
                 <div className="mt-8 border-b">
                     <div className="flex space-x-6">
                         <Button

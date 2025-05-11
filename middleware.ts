@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
     // Rotas protegidas
-    const protectedRoutes = ['/dashboard', '/confirmation', '/group']
+    const protectedRoutes = ['/dashboard']
     const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
 
     // Se tentar acessar rota protegida sem token
