@@ -1,10 +1,10 @@
 'use server'
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = await params
+        const id = (await params).id
 
         if (!id) {
             return NextResponse.json({ error: 'Restaurant ID is required' }, { status: 400 })
@@ -35,9 +35,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params
+        const id = await params
         const body = await request.json()
 
         if (!id) {

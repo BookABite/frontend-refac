@@ -1,10 +1,10 @@
 'use server'
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = await params
+        const id = (await params).id
 
         if (!id) {
             return NextResponse.json({ error: 'Restaurant id is required' }, { status: 400 })
@@ -35,16 +35,15 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params
+        const id = (await params).id
         const body = await request.json()
 
         if (!id) {
             return NextResponse.json({ error: 'Restaurant id is required' }, { status: 400 })
         }
 
-        // Validar se pelo menos um campo foi enviado para atualização
         const updatableFields = [
             'name',
             'description',

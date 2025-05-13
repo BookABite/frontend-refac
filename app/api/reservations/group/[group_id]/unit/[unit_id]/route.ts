@@ -1,9 +1,9 @@
 import apiBookaBite from '@/lib/booking-service'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(
-    request: Request,
-    { params }: { params: { group_id: string; unit_id: string } }
+    request: NextRequest,
+    { params }: { params: Promise<{ group_id: string; unit_id: string }> }
 ) {
     try {
         const { group_id, unit_id } = await params
@@ -34,9 +34,9 @@ export async function POST(
     }
 }
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = await params
+        const id = (await params).id
 
         if (!id) {
             return NextResponse.json({ error: 'Restaurant ID is required' }, { status: 400 })
