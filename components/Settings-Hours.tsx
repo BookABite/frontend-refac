@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { motion } from 'framer-motion'
 import { CalendarClock, CalendarCog, CalendarX2, Save } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { BlockedHourItem } from './Blocked-Hours'
@@ -147,6 +147,28 @@ const SettingsHours = ({ user }: any) => {
             },
         },
     }
+
+    useEffect(() => {
+        if (group_id && unitId) {
+            fetch(`/api/${group_id}/units/${unitId}/working-hours`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (Array.isArray(data)) {
+                        setWorkingHours(data)
+                    }
+                })
+                .catch((error) => console.error('Erro ao buscar horários de trabalho:', error))
+
+            fetch(`/api/${group_id}/units/${unitId}/blocked-hours`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (Array.isArray(data)) {
+                        setBlockedHours(data)
+                    }
+                })
+                .catch((error) => console.error('Erro ao buscar horários bloqueados:', error))
+        }
+    }, [group_id, unitId])
 
     return (
         <Card className="w-full">
